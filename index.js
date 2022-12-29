@@ -1,7 +1,7 @@
 const express = require('express')
 const cors = require('cors');
 require('dotenv').config();
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId  } = require('mongodb');
 const app = express()
 const port = process.env.PORT || 5000;
 
@@ -20,17 +20,27 @@ async function run() {
     const usersCollection = client.db('sonjotbhaitaskdata').collection('users');
 
     //user collect api for Get
-    app.get('/user',  async (req, res) => {
+    app.get('/user', async (req, res) => {
       const users = await usersCollection.find().toArray();
       res.send(users);
     });
 
-          //user collect api for post
-      app.post('/addUser', async (req, res) => {
-        const review = req.body;
-        const result = await usersCollection.insertOne(review);
-        res.send(result);
-      })
+    //user collect api for post
+    app.post('/addUser', async (req, res) => {
+      const review = req.body;
+      const result = await usersCollection.insertOne(review);
+      res.send(result);
+    })
+      // delete user collection api 
+
+    app.delete('/order/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await usersCollection.deleteOne(query);
+      res.send(result);
+    })
+
+    
 
   } finally {
   }
